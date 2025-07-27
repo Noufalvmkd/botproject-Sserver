@@ -45,5 +45,30 @@ const userSignup = async (req, res) => {
   }
 };
 
-module.exports = { userSignup };
+const userLogin = async (req ,res )=>{
+  try{
+    console.log("hi user login")
+  const { email , password} =req.body
+  console.log( {email , password})
+  if (!email || !password){
+    res.status(400).json({message: " all field is reuired"})
+    console.log("user not exist")
+  }
+  const userExist = await  User.findOne({email})
+  console.log(userExist.email + "hi this is from db")
+  if(!userExist){
+    return res.status(400).json({message: "user not exist"})
+    
+  }
+  const passwordMatch = userExist.password
+  if(!passwordMatch){
+    return res.status(401).json({message:" user not authenticated"})
+  }
+    
+  }catch{
+
+  }
+}
+
+module.exports = { userSignup , userLogin};
 
