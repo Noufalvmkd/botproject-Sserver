@@ -1,13 +1,16 @@
 
 
-const { User } = require("../models/userModel");
+// const { User } = require("../models/userModel");
+const User = require("../models/userModel");
 
 const userSignup = async (req, res) => {
   try {
-    const { name, email, password, mobile } = req.body;
+    console.log("hitted")
+    const { email, password, profile_pic, role, phone, personal_details, status } = req.body;
+
 
     // Basic validation
-    if (!name || !email || !password) {
+    if (!email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -18,7 +21,16 @@ const userSignup = async (req, res) => {
     }
 
     // Create and save new user
-    const newUser = new User({ name, email, password, mobile });
+    const newUser = new User({
+  email,
+  password,
+  profile_pic,
+  role,
+  phone,
+  personal_details,
+  status,
+});
+
     await newUser.save();
 
     return res.status(201).json({
@@ -27,7 +39,9 @@ const userSignup = async (req, res) => {
     });
 
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
+    console.log(error)
+    res.status(500).json({ message: "Internal server error", error: error.message });
+   
   }
 };
 

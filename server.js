@@ -9,6 +9,7 @@ const connectDB = require("./src/config/db");
 
 
 const app = express()
+app.use(express.json());
 
 // Route imports
 
@@ -22,10 +23,11 @@ app.get('/', (req, res) => {
 
 // Route usage
 
-connectDB();
+
 
 app.use("/api",apiRouter) //main router for all api routs
 
+connectDB();
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
