@@ -2,6 +2,9 @@ const express = require('express')
 
 // const { apiRouter } = require("./src/routes/index");
 const apiRouter = require('./src/routes'); 
+const connectDB = require("./src/config/db");
+
+
 
 
 
@@ -19,7 +22,7 @@ app.get('/', (req, res) => {
 
 // Route usage
 
-
+connectDB();
 
 app.use("/api",apiRouter) //main router for all api routs
 
