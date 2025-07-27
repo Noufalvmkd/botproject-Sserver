@@ -70,5 +70,18 @@ const userLogin = async (req ,res )=>{
   }
 }
 
-module.exports = { userSignup , userLogin};
+const userProfile = async (req , res)=>{
+   console.log("req.user =>", req.user);
+try{
+const userId = req.user.id;
+
+const userData = await User.findById(userId).select('-password')
+return res.json({data:userData , message : " user profile fetched"})
+}catch(error){
+return res.status(error.statusCode || 500).json({message:error.message || "internal sever error"})
+}
+
+}
+
+module.exports = { userSignup , userLogin , userProfile};
 

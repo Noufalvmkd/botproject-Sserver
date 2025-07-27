@@ -1,5 +1,5 @@
 const express = require('express');
-const { userSignup , userLogin } = require('../controllers/userController');
+const { userSignup , userLogin , userProfile } = require('../controllers/userController');
 // const { userAuth } = require('../middlewares/userAuth');
 
 const router = express.Router();
@@ -11,7 +11,7 @@ router.post('/signup', userSignup);
 router.put('/login', userLogin);
 
 // // Profile
-// router.get('/profile',  userProfile);
+router.get('/profile',  userProfile);
 
 // // Logout
 // router.put('/logout',  userLogout);
