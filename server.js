@@ -1,4 +1,6 @@
 const express = require('express')
+const cors = require('cors');
+
 
 // const { apiRouter } = require("./src/routes/index");
 const apiRouter = require('./src/routes'); 
@@ -12,6 +14,7 @@ const app = express()
 app.use(express.json());
 
 // Route imports
+app.use(cors());
 
 
 
