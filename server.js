@@ -1,7 +1,16 @@
+
 const express = require('express')
+
 const cors = require('cors');
+const dotenv = require("dotenv");
+require("dotenv").config();
 
 
+
+
+const port = process.env.PORT
+
+console.log(port)
 // const { apiRouter } = require("./src/routes/index");
 const apiRouter = require('./src/routes'); 
 const connectDB = require("./src/config/db");
@@ -18,7 +27,6 @@ app.use(cors());
 
 
 
-const port = 3000
 
 app.get('/', (req, res) => {
   res.send('server is working')
@@ -30,7 +38,10 @@ app.get('/', (req, res) => {
 
 app.use("/api",apiRouter) //main router for all api routs
 
-connectDB();
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+connectDB().then(() => {
+  app.listen(port, () => {
+    console.log(` Server running at http://localhost:${port}`);
+  });
+}).catch((err) => {
+  console.error(" Failed to connect to DB:", err);
+});
