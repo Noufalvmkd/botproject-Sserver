@@ -1,7 +1,13 @@
 
 
 // const { User } = require("../models/userModel");
+const UserModel = require("../models/userModel");
 const User = require("../models/userModel");
+const bcrypt = require('bcrypt');
+
+// const saltRounds = process.env.SALT_ROUNDS
+const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
+
 
 const userSignup = async (req, res) => {
   try {
@@ -18,25 +24,43 @@ const userSignup = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
-    }
-
-    // Create and save new user
-    const newUser = new User({
+    }else{
+      bcrypt.hash(password, saltRounds, async function(err, hash) {
+    if(hash){
+      const newUser = await UserModel.create({
   email,
-  password,
+  password : hash,
   profile_pic,
   role,
   phone,
   personal_details,
   status,
-});
-
-    await newUser.save();
-
-    return res.status(201).json({
+      })
+      return res.status(201).json({
       message: "User registered successfully",
       data: newUser,
     });
+    }else{
+      res.status(400).json({ message: "try again" })
+      
+    }
+});
+    }
+
+    // Create and save new user
+//     const newUser = new User({
+//   email,
+//   password,
+//   profile_pic,
+//   role,
+//   phone,
+//   personal_details,
+//   status,
+// });
+
+    // await newUser.save();
+
+    
 
   } catch (error) {
     console.log(error)
