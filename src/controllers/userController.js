@@ -4,9 +4,11 @@
 const UserModel = require("../models/userModel");
 const User = require("../models/userModel");
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken")
 
 // const saltRounds = process.env.SALT_ROUNDS
 const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
+const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 
 const userSignup = async (req, res) => {
@@ -68,29 +70,37 @@ const userSignup = async (req, res) => {
    
   }
 };
-
+//login
 const userLogin = async (req ,res )=>{
   try{
     console.log("hi user login")
   const { email , password} =req.body
-  console.log( {email , password})
-  if (!email || !password){
-    res.status(400).json({message: " all field is reuired"})
-    console.log("user not exist")
+  if(!email || !password){
+    return res.status(400).json({message: "Email and password is required"})
   }
-  const userExist = await  User.findOne({email})
-  console.log(userExist.email + "hi this is from db")
-  if(!userExist){
-    return res.status(400).json({message: "user not exist"})
-    
+  const user = await UserModel.findOne({email})
+  
+  if (user){
+
+    if (user.status==="inactive"){
+    return res.status(401).json({message:"Account is inactive . please contact admin"})
   }
-  const passwordMatch = userExist.password
-  if(!passwordMatch){
-    return res.status(401).json({message:" user not authenticated"})
+    bcrypt.compare(password , user.password, function(err , result){
+      if (result){
+        var token = jwt.sign({email}, JWT_SECRET)
+        res.cookie('token', 'token',{maxAge : 30 * 24 * 60 * 60 * 1000 , httpOnly : true, sameSite:"None" , secure: true})
+        res.json({"message": " Login successful" ,token})
+      }else{
+        res.status(401).json({"message": "invalid credential"})
+      }
+    });
+  }else{
+    res.status(400).json({"message": "invalid credential"})
   }
+  
     
   }catch{
-
+res.status(400).json({"message": "something error from server"})
   }
 }
 
