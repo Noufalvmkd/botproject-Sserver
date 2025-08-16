@@ -9,11 +9,11 @@ const {
 
 } = require("../controllers/productController");
 
-router.post("/", createProduct);       // POST /api/products
-router.get("/", getAllProducts);       // GET /api/products
-router.get("/:id", getProductById);    // GET /api/products/:id
-router.put("/:id", updateProduct);     // PUT /api/products/:id
-router.delete("/:id", deleteProduct);  // DELETE /api/products/:id
+router.post("/add-product", createProduct);       // POST /api/products
+router.get("/get-all-product", getAllProducts);       // GET /api/products
+router.get("/product-details/:id", getProductById);    // GET /api/products/:id
+router.put("/update/:id", updateProduct);     // PUT /api/products/:id
+router.delete("/remove-product/:id", deleteProduct);  // DELETE /api/products/:id
 
 
 module.exports = router;

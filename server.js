@@ -1,11 +1,16 @@
 
 const express = require('express')
+const app = express()
 
 const cors = require('cors');
 const dotenv = require("dotenv");
 require("dotenv").config();
-
-
+var corsOptions = {
+  origin: process.env.CLIENT_URL,
+  optionsSuccessStatus: 200,
+  credentials: true
+}
+app.use(cors(corsOptions))
 
 
 
@@ -21,13 +26,13 @@ const cookieParser = require('cookie-parser');
 
 
 
-const app = express()
+
 app.use(cookieParser());
 app.use(express.json());
 
 // Route imports
 // app.use(cors());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+// app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
 
 
 
