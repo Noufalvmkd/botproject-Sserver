@@ -3,7 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 const { userRouter } = require('./userRoutes');
-// const productRoutes = require('./productRoutes');
+const productRoutes = require('./productRoutes');
+const adminRoutes = require('./adminRoutes');
 // const orderRoutes = require('./orderRoutes');
 // const reviewRoutes = require('./reviewRoutes');
 // const cartRoutes = require('./cartRoutes');
@@ -13,7 +14,8 @@ const { userRouter } = require('./userRoutes');
 
 
 router.use('/user', userRouter);
-// router.use('/products', productRoutes);
+router.use('/admin', adminRoutes);
+router.use('/products', productRoutes);
 // router.use('/orders', orderRoutes);
 // router.use('/reviews', reviewRoutes);
 // router.use('/cart', cartRoutes);

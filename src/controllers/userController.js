@@ -87,8 +87,8 @@ const userLogin = async (req ,res )=>{
   }
     bcrypt.compare(password , user.password, function(err , result){
       if (result){
-        var token = jwt.sign({email}, JWT_SECRET)
-        res.cookie('token', 'token',{maxAge : 30 * 24 * 60 * 60 * 1000 , httpOnly : true, sameSite:"None" , secure: true})
+        const token = jwt.sign({id: user._id , email: user.email , role:user.role}, JWT_SECRET,{expiresIn :"30d"});
+        res.cookie('token', token,{maxAge : 30 * 24 * 60 * 60 * 1000 , httpOnly : true, sameSite:"None" , secure: true})
         res.json({"message": " Login successful" ,token})
       }else{
         res.status(401).json({"message": "invalid credential"})
