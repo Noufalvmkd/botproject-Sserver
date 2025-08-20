@@ -1,5 +1,6 @@
 const express = require('express');
-const { userSignup , userLogin , userProfile } = require('../controllers/userController');
+const { userSignup , userLogin , userProfile, userLogout } = require('../controllers/userController');
+const { userAuth } = require('../middlewares/userAuth');
 // const { userAuth } = require('../middlewares/userAuth');
 
 const router = express.Router();
@@ -11,7 +12,9 @@ router.post('/signup', userSignup);
 router.post('/login', userLogin);
 
 // // Profile
-router.get('/profile',  userProfile);
+router.get('/profile',userAuth, userProfile);
+
+router.put('/logout' ,userAuth,userLogout);
 
 // // Logout
 // router.put('/logout',  userLogout);
@@ -21,7 +24,7 @@ router.get('/profile',  userProfile);
 
 // Forgot password, change password, account deactivated — placeholders for now
 
-module.exports = { userRouter: router }; // same meaning as "export { router as userRouter }"
+module.exports = router ; // same meaning as "export { router as userRouter }"
 
 
 
