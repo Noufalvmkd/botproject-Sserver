@@ -1,11 +1,24 @@
-const express = require("express");
-const router = express.Router();
 
-const { getAllUsers, deleteUser } = require("../controllers/adminController");
-const authMiddleware = require("../middlewares/authMiddleware");
-const authorizeRoles = require("../middlewares/userAuth");
+const express = require('express');
+const { adminSignup , adminLogin ,adminProfile ,adminLogout } = require('../controllers/adminController');
+const { adminAuth } = require('../middlewares/adminAuth');
 
-router.get("/users", authMiddleware, authorizeRoles("admin"), getAllUsers);
-router.delete("/users/:id", authMiddleware, authorizeRoles("admin"), deleteUser);
 
-module.exports = router;
+
+const router =express.Router();
+
+
+router.post('/signup', adminSignup);
+//login
+router.put('/login', adminLogin) // bcz new datas not adding (so can be used put)
+//profile
+router.get('/profile',adminAuth,adminProfile)
+//Logout
+router.put('/logout',adminAuth,adminLogout)
+//profileUpdate
+
+//forgot password
+//change password
+//account deactivated
+
+module.exports = router ;

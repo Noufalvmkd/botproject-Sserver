@@ -104,18 +104,29 @@ res.status(400).json({"message": "something error from server"})
   }
 }
 
-const userProfile = async (req , res)=>{
-   console.log("req.user =>", req.user);
-try{
-const userId = req.user.id;
 
-const userData = await User.findById(userId).select('-password')
-return res.json({data:userData , message : " user profile fetched"})
-}catch(error){
-return res.status(error.statusCode || 500).json({message:error.message || "internal sever error"})
+
+const userProfile = async (req,res,next)=>{
+    try {
+        const userId =req.user.id;
+
+        const userData = await User.findById(userId).select('-password');
+        return res.json({data:userData , message:"user profile fetched"});
+    } catch (error) {
+        return res.status(error.statusCode ||500).json({message:error.message || "internal server error"})
+    }
 }
 
+const userLogout = async (req,res,next)=>{
+    try {
+        res.clearCookie("token")
+
+        
+        return res.json({message:"user Logged out successfuly"});
+    } catch (error) {
+        return res.status(error.statusCode ||500).json({message:error.message || "internal server error"})
+    }
 }
 
-module.exports = { userSignup , userLogin , userProfile};
+module.exports = { userSignup , userLogin , userProfile ,userLogout};
 
