@@ -24,7 +24,7 @@ const productSchema = new mongoose.Schema(
       default: 0
     },
     reviews: {
-      type: Number,
+      type: String,
       default: 0
     }
   },
