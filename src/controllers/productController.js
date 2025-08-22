@@ -1,16 +1,21 @@
-// const Product = require("../model/ProductModel")
+
 const Product = require("../models/productModel");
+const  cloudinaryInstance  = require("../config/cloudinary");
+
 
 
 // Add new product
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, image, rating, reviews } = req.body;
+    const { name, description, price,  rating, reviews } = req.body;  //image by multer
+    console.log("image===",req.file);
+    const cloudinaryResponse = await cloudinaryInstance.uploader.upload(req.file.path);
+    console.log(cloudinaryResponse)
 
-    const product = new Product({ name, description, price, image, rating, reviews });
+    const product = new Product({ name, description, price, rating, image: cloudinaryResponse.secure_url , reviews });
     await product.save();
 
-    res.status(201).json(product);
+    res.status(201).json({ message: "product created successfully", newProduct: product });
   } catch (err) {
     res.status(500).json({ message: "Failed to create product", error: err.message });
   }
@@ -29,7 +34,9 @@ const getAllProducts = async (req, res) => {
 // Get single product by ID
 const getProductById = async (req, res) => {
   try {
+    const id = req.params.id;
     const product = await Product.findById(req.params.id);
+    console.log("Product ID:", id);
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.json(product);
   } catch (err) {
