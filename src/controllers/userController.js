@@ -128,5 +128,13 @@ const userLogout = async (req,res,next)=>{
     }
 }
 
-module.exports = { userSignup , userLogin , userProfile ,userLogout};
+const checkUser = async (req,res,next)=>{
+    try {
+        return res.json({message: "user authorized"})
+    } catch (error) {
+        return res.status(error.statusCode ||500).json({message:error.message || "internal server error"})
+    }
+}
+
+module.exports = { userSignup , userLogin , userProfile ,userLogout , checkUser};
 

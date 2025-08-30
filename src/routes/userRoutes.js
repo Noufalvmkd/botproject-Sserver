@@ -1,5 +1,5 @@
 const express = require('express');
-const { userSignup , userLogin , userProfile, userLogout } = require('../controllers/userController');
+const { userSignup , userLogin , userProfile, userLogout , checkUser } = require('../controllers/userController');
 const { userAuth } = require('../middlewares/userAuth');
 // const { userAuth } = require('../middlewares/userAuth');
 
@@ -15,6 +15,9 @@ router.post('/login', userLogin);
 router.get('/profile',userAuth, userProfile);
 
 router.put('/logout' ,userAuth,userLogout);
+
+//check user
+router.get("/check-user" , userAuth ,checkUser)
 
 // // Logout
 // router.put('/logout',  userLogout);

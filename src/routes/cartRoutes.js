@@ -5,14 +5,16 @@ const {
   getCart,
   removeFromCart
 } = require("../controllers/cartController");
+const { userAuth } = require("../middlewares/userAuth");
 
 // Add or update cart
-router.post("/", addToCart);
+router.post("/add-cart",userAuth, addToCart);
 
 // Get cart by user ID
-router.get("/:userId", getCart);
+router.get("/get-cart", userAuth , getCart);
 
 // Remove item from cart
-router.put("/remove", removeFromCart);
+router.delete("/remove/:productId", userAuth, removeFromCart);
+
 
 module.exports = router;
