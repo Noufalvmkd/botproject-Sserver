@@ -8,11 +8,17 @@ const  cloudinaryInstance  = require("../config/cloudinary");
 const createProduct = async (req, res) => {
   try {
     const { name, description, price,  rating, reviews } = req.body;  //image by multer
+    let cloudinaryResponse;
+    const adminId = req.admin.id;
+    console.log( "hi" ,adminId)
     console.log("image===",req.file);
-    const cloudinaryResponse = await cloudinaryInstance.uploader.upload(req.file.path);
+
+    if(req.file){
+    cloudinaryResponse = await cloudinaryInstance.uploader.upload(req.file.path);
+  }
     console.log(cloudinaryResponse)
 
-    const product = new Product({ name, description, price, rating, image: cloudinaryResponse.secure_url , reviews });
+    const product = new Product({ name, description, price, rating, image: cloudinaryResponse.secure_url ,admin: adminId, reviews });
     await product.save();
 
     res.status(201).json({ message: "product created successfully", newProduct: product });

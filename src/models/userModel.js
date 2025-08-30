@@ -15,9 +15,11 @@ const userSchema = new mongoose.Schema(
       minlength: [8, "Password must be at least 8 characters"]
     },
     profile_pic: {
-      type: String,
-      trim: true
-    },
+  type: String,
+  trim: true,
+  default: "https://via.placeholder.com/150" // fallback avatar
+},
+
     role: {
       type: String,
       enum: ["admin", "user", "seller"],

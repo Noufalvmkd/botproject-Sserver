@@ -10,7 +10,7 @@ const router =express.Router();
 
 router.post('/signup', adminSignup);
 //login
-router.put('/login', adminLogin) // bcz new datas not adding (so can be used put)
+router.post('/login', adminLogin) // bcz new datas not adding (so can be used put)
 //profile
 router.get('/profile',adminAuth,adminProfile)
 //Logout
