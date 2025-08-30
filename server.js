@@ -4,13 +4,26 @@ const app = express()
 
 const cors = require('cors');
 const dotenv = require("dotenv");
-require("dotenv").config();
-var corsOptions = {
-  origin: process.env.CLIENT_URL,
+dotenv.config(); // load .env
+
+// Read allowed origins from environment variable (comma-separated)
+const allowedOrigins = process.env.CLIENT_URLS.split(",");
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow requests like Postman, curl
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true); // allow this origin
+    } else {
+      callback(new Error("CORS policy does not allow this origin."), false);
+    }
+  },
   optionsSuccessStatus: 200,
   credentials: true
-}
-app.use(cors(corsOptions))
+};
+
+app.use(cors(corsOptions));
+
 
 
 
