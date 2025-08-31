@@ -143,11 +143,12 @@ const checkUser = async (req, res ,next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userData = await User.findById(decoded.id).select('-password');
     
 
     return res.json({
       message: "User authorized",
-      data: decoded, // send user info back
+      data:userData, // send user info back
     });
   } catch (error) {
     return res
