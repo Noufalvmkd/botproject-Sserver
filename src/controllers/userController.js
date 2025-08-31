@@ -79,6 +79,10 @@ const userLogin = async (req ,res )=>{
     return res.status(400).json({message: "Email and password is required"})
   }
   const user = await UserModel.findOne({email})
+
+   if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
   
   if (user){
 
@@ -88,7 +92,10 @@ const userLogin = async (req ,res )=>{
     bcrypt.compare(password , user.password, function(err , result){
       if (result){
         const token = jwt.sign({id: user._id , email: user.email , role:user.role}, JWT_SECRET,{expiresIn :"30d"});
-        res.cookie('token', token,{maxAge : 30 * 24 * 60 * 60 * 1000 , httpOnly : true, sameSite:"None" , secure: true})
+        res.cookie('token', token,{maxAge : 30 * 24 * 60 * 60 * 1000 ,
+            httpOnly : true,
+            secure: process.env.NODE_ENV === "production", // only HTTPS in prod
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", })
         res.json({"message": " Login successful" ,token})
       }else{
         res.status(401).json({"message": "invalid credential"})
@@ -128,13 +135,26 @@ const userLogout = async (req,res,next)=>{
     }
 }
 
-const checkUser = async (req,res,next)=>{
-    try {
-        return res.json({message: "user authorized"})
-    } catch (error) {
-        return res.status(error.statusCode ||500).json({message:error.message || "internal server error"})
+const checkUser = async (req, res ,next) => {
+  try {
+    const token = req.cookies.token; 
+    if (!token) {
+      return res.status(401).json({ message: "No token" });
     }
-}
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    
+
+    return res.json({
+      message: "User authorized",
+      data: decoded, // send user info back
+    });
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ message: error.message || "Invalid token" });
+  }
+};
 
 module.exports = { userSignup , userLogin , userProfile ,userLogout , checkUser};
 
