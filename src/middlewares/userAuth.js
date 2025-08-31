@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const userAuth = (req, res, next)=>{
+    console.log("Cookies received:", req.cookies);
     try {
         const {token} = req.cookies;
         // console.log(req.cookies.token);
