@@ -1,9 +1,9 @@
 
 const express = require('express');
 const { addReview , getProductReviews ,  deleteReview , getAverageRating } = require('../controllers/reviewController');
-const { adminAuth } = require('../middlewares/userAuth');
+const  adminAuth  = require('../middlewares/userAuth');
 
-const { userAuth } = require('../middlewares/userAuth');
+const  userAuth  = require('../middlewares/userAuth');
 // const { userAuth } = require('../middlewares/userAuth');
 
 const router = express.Router();
