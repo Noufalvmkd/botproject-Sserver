@@ -1,7 +1,7 @@
 
 const express = require('express');
 const { adminSignup , adminLogin ,adminProfile ,adminLogout } = require('../controllers/adminController');
-const { adminAuth } = require('../middlewares/adminAuth');
+const  adminAuth  = require('../middlewares/adminAuth');
 
 
 

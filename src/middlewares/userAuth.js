@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
-import dotenv from 'dotenv';
+const jwt = require("jsonwebtoken");
+const dotenv = require('dotenv');
 dotenv.config();
 
-export const userAuth = (req, res, next)=>{
+const userAuth = (req, res, next)=>{
     console.log("Cookies received:", req.cookies);
     try {
         const {token} = req.cookies;
@@ -30,3 +30,5 @@ export const userAuth = (req, res, next)=>{
        return res.status(401).json({message:error.message || "user authorization failed" , success:false}) 
     }
 }
+
+module.exports = userAuth;

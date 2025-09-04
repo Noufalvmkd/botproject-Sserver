@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
-import dotenv from 'dotenv';
+const jwt = require("jsonwebtoken");
+const dotenv = require('dotenv');
 dotenv.config();
 
-export const adminAuth = (req, res, next)=>{
+const adminAuth = (req, res, next)=>{
     try {
         const token = req.cookies.token;
         console.log(req.cookies.token);
@@ -29,3 +29,4 @@ export const adminAuth = (req, res, next)=>{
        return res.status(401).json({message:error.message || "admin authorization failed" , success:false}) 
     }
 }
+module.exports = adminAuth;
