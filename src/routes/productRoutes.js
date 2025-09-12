@@ -16,9 +16,10 @@ router.get('/getproducts', getAllProducts);
 // // Profile
 router.get('/getbyid/:id',getProductById);
 
-router.put('/update' ,updateProduct);
+router.put('/update/:id', updateProduct);
 
-router.put('/delete' ,deleteProduct);
+router.delete('/delete/:id', deleteProduct);
+
 
 // // Logout
 // router.put('/logout',  userLogout);

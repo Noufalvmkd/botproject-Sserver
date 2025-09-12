@@ -16,7 +16,7 @@ const createProduct = async (req, res) => {
     if(req.file){
     cloudinaryResponse = await cloudinaryInstance.uploader.upload(req.file.path);
   }
-    console.log(cloudinaryResponse)
+    // console.log(cloudinaryResponse)
 
     const product = new Product({ name, description, price, rating, image: cloudinaryResponse.secure_url ,admin: adminId, reviews });
     await product.save();
@@ -42,7 +42,7 @@ const getProductById = async (req, res) => {
   try {
     const id = req.params.id;
     const product = await Product.findById(req.params.id);
-    console.log("Product ID:", id);
+    // console.log("Product ID:", id);
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.json(product);
   } catch (err) {
