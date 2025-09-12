@@ -127,7 +127,33 @@ const adminLogout = async (req,res,next)=>{
     }
 }
 
-module.exports = { adminSignup ,   adminLogin , adminProfile ,adminLogout};
+const checkAdmin = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ message: "No token" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    const adminData = await Admin.findById(decoded.id).select("-password");
+
+    if (!adminData) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    return res.json({
+      message: "Admin authorized",
+      data: adminData,
+    });
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ message: error.message || "Invalid token" });
+  }
+};
+
+module.exports = { adminSignup ,   adminLogin , adminProfile ,adminLogout , checkAdmin};
 
 
 
