@@ -116,16 +116,23 @@ const adminProfile = async (req,res,next)=>{
     }
 }
 
-const adminLogout = async (req,res,next)=>{
-    try {
-        res.clearCookie("token")
+const adminLogout = async (req, res, next) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,       // use true in production with HTTPS
+      sameSite: "None",   // required if frontend is on another domain
+      path: "/",          // must match cookie set
+    });
 
-        
-        return res.json({message:"admin Logged out successfuly"});
-    } catch (error) {
-        return res.status(error.statusCode ||500).json({message:error.message || "internal server error"})
-    }
-}
+    return res.json({ message: "Admin Logged out successfully" });
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ message: error.message || "internal server error" });
+  }
+};
+
 
 const checkAdmin = async (req, res) => {
   try {
