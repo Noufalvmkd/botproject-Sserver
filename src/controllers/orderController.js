@@ -1,37 +1,44 @@
 const Order = require("../models/OrderModel");
 const Product = require("../models/productModel");
+const Cart = require('../models/cartModel')
 
-// @desc    Create new order
-// @route   POST /api/orders
-// @access  Private (user)
+
+
 const createOrder = async (req, res) => {
   try {
-    const { products, shippingInfo, paymentInfo } = req.body;
+    const { products, shippingInfo, paymentInfo, totalAmount } = req.body;
 
     if (!products || products.length === 0) {
       return res.status(400).json({ message: "No products in order" });
     }
 
-    // calculate total amount
-    let totalAmount = 0;
-    products.forEach(item => {
-      totalAmount += item.price * item.quantity;
-    });
-
-    const order = new Order({
-      user: req.user.id,  // comes from authMiddleware
-      products,
+    const newOrder = new Order({
+      user: req.user.id,
+      products: products.map((item) => ({
+    product: item.productId, //  store under "product"
+    quantity: item.quantity,
+    price: item.price,
+  })),
       shippingInfo,
       paymentInfo,
-      totalAmount
+      totalAmount,
     });
 
-    await order.save();
-    res.status(201).json({ message: "Order created successfully", order });
+    await newOrder.save();
+
+    //  Clear cart after order is placed
+    await Cart.findOneAndUpdate(
+      { userId: req.user.id },
+      { $set: { products: [], totalPrice: 0 } }
+    );
+
+    res.status(201).json(newOrder);
   } catch (error) {
-    res.status(500).json({ message: "Error creating order", error: error.message });
+    console.error("Create Order Error:", error.message);
+    res.status(500).json({ message: "Failed to create order" });
   }
 };
+
 
 // @desc    Get logged-in user’s orders
 // @route   GET /api/orders/my-orders
