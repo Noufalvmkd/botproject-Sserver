@@ -78,7 +78,18 @@ const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    order.orderStatus = status || order.orderStatus;
+    const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid order status" });
+    }
+
+    order.orderStatus = status;
+
+    // If COD → mark as paid on delivery
+    if (status === "delivered" && order.paymentInfo.method === "COD") {
+      order.paymentInfo.status = "paid";
+    }
+
     await order.save();
 
     res.json({ message: "Order status updated", order });
@@ -87,9 +98,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// @desc    Delete order (optional, for testing/admin)
-// @route   DELETE /api/orders/:id
-// @access  Private (admin)
 const deleteOrder = async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);
