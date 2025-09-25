@@ -10,7 +10,7 @@ const router = express.Router();
 
 
 router.post("/add-review", userAuth, addReview);
-router.get("/get-course-reviews",getProductReviews);
+router.get("/get-product-reviews",getProductReviews);
 router.delete('/delete-review',userAuth,deleteReview);
 router.get('/get-avg-rating',getAverageRating);
 
