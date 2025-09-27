@@ -15,7 +15,7 @@ const createOrder = async (req, res) => {
     const newOrder = new Order({
       user: req.user.id,
       products: products.map((item) => ({
-    product: item.productId, //  store under "product"
+    product: item.product, //  store under "product"
     quantity: item.quantity,
     price: item.price,
   })),

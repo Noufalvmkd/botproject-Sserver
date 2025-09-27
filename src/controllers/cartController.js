@@ -21,7 +21,7 @@ const addToCart = async (req, res) => {
       cart = new Cart({ userId, products: [] });
     }
 
-    // ✅ Use `products` instead of `items`
+    
     const existingItemIndex = cart.products.findIndex(p => p.productId.equals(productId));
 
     if (existingItemIndex !== -1) {

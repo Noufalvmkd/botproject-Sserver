@@ -3,6 +3,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/adminModel");
+const User = require("../models/userModel")
 
 const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
@@ -133,6 +134,52 @@ const adminLogout = async (req, res, next) => {
   }
 };
 
+const checkUser = async (req, res) => {
+  try {
+    // Fetch all users
+    const users = await User.find().select("-password"); // exclude passwords
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.json({
+      success: true,
+      users, // returns array of all users
+    });
+  } catch (error) {
+    console.error("Get All Users Error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+//update user status
+
+const updateUserStatus = async (req, res) => {
+  try {
+    const { isActive } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { isActive },
+      { new: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      success: true,
+      message: "User status updated",
+      user: updatedUser,
+    });
+  } catch (err) {
+    console.error("Update User Status Error:", err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 const checkAdmin = async (req, res) => {
   try {
@@ -160,7 +207,7 @@ const checkAdmin = async (req, res) => {
   }
 };
 
-module.exports = { adminSignup ,   adminLogin , adminProfile ,adminLogout , checkAdmin};
+module.exports = { adminSignup ,   adminLogin , adminProfile ,adminLogout , checkUser , updateUserStatus , checkAdmin};
 
 
 
