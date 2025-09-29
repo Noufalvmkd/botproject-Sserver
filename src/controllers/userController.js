@@ -126,10 +126,15 @@ const userProfile = async (req,res,next)=>{
 
 const userLogout = async (req,res,next)=>{
     try {
-        res.clearCookie("token")
+        res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // must match login cookie
+      sameSite: "lax", // must match login cookie
+      path: "/",       // must match login cookie
+    })
 
         
-        return res.json({message:"user Logged out successfuly"});
+        return res.json({message:"user Logged out successfuly" , success: true});
     } catch (error) {
         return res.status(error.statusCode ||500).json({message:error.message || "internal server error"})
     }

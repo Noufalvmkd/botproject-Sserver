@@ -6,6 +6,6 @@ const createPayment = require("../controllers/paymentController");
 const router = express.Router();
 
 // POST /payment/create-checkout-session
-router.post("/create-checkout-session", userAuth , createPayment);
+router.post("/createpayment", userAuth , createPayment);
 
 module.exports = router ;

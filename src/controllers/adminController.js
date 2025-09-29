@@ -157,28 +157,26 @@ const checkUser = async (req, res) => {
 
 const updateUserStatus = async (req, res) => {
   try {
-    const { isActive } = req.body;
+    const { id } = req.params;
+    const { status } = req.body; // expecting "active" or "inactive"
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      { isActive },
+    if (!id) return res.status(400).json({ message: "User ID required" });
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { status },
       { new: true }
-    ).select("-password");
+    );
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.json({
-      success: true,
-      message: "User status updated",
-      user: updatedUser,
-    });
+    res.json({ success: true, user });
   } catch (err) {
-    console.error("Update User Status Error:", err.message);
+    console.error("Update status error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 const checkAdmin = async (req, res) => {
