@@ -26,19 +26,18 @@ const createPayment = async (req, res ) => {
   };
 });
 
-
-  const clientUrl = process.env.NODE_ENV === "production" 
-  ? process.env.CLIENT_URL_PROD 
-  : process.env.CLIENT_URL_DEV;
-console.log("Using clientUrl:", clientUrl);
+const CLIENT_URLS = process.env.CLIENT_URLS;
+console.log("Using clientUrl:", CLIENT_URLS);
 
 const session = await stripe.checkout.sessions.create({
   payment_method_types: ["card"],
   line_items: lineItems,
   mode: "payment",
-  success_url: `${clientUrl}/user/payment/success`,
-  cancel_url: `${clientUrl}/user/payment/cancel`,
+  success_url: `${CLIENT_URLS}/user/payment/success`,
+  cancel_url: `${CLIENT_URLS}/user/payment/cancel`,
 });
+
+  
 
 console.log("Line Items ===>", lineItems);
 
@@ -51,3 +50,18 @@ console.log("Line Items ===>", lineItems);
 };
 
 module.exports = createPayment;
+
+
+
+// const clientUrl = process.env.NODE_ENV === "production" 
+//   ? process.env.CLIENT_URL_PROD 
+//   : process.env.CLIENT_URL_DEV;
+// console.log("Using clientUrl:", clientUrl);
+
+// const session = await stripe.checkout.sessions.create({
+//   payment_method_types: ["card"],
+//   line_items: lineItems,
+//   mode: "payment",
+//   success_url: `${clientUrl}/user/payment/success`,
+//   cancel_url: `${clientUrl}/user/payment/cancel`,
+// });
