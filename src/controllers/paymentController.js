@@ -1,4 +1,6 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const Order = require("../models/OrderModel")
+const Cart = require ("../models/cartModel")
 
 const createPayment = async (req, res ) => {
   try {
@@ -49,7 +51,47 @@ console.log("Line Items ===>", lineItems);
   }
 };
 
-module.exports = createPayment;
+
+// Handle Stripe success (finalize order + clear cart)
+const paymentSuccess = async (req, res) => {
+  try {
+    const userId = req.user.id; // require auth middleware
+    const { shippingInfo } = req.body;
+
+    const cart = await Cart.findOne({ user: userId }).populate("products.productId");
+
+    if (!cart || cart.products.length === 0) {
+      return res.status(400).json({ message: "Cart is empty" });
+    }
+
+    // Create new order
+    const order = new Order({
+      user: userId,
+      products: cart.products.map((p) => ({
+        product: p.productId._id,
+        quantity: p.quantity,
+        price: p.price,
+      })),
+      shippingInfo,
+      paymentInfo: { method: "Card", status: "paid" },
+      totalAmount: cart.totalPrice,
+    });
+
+    await order.save();
+
+    // Clear cart
+    cart.products = [];
+    cart.totalPrice = 0;
+    await cart.save();
+
+    res.json({ success: true, order });
+  } catch (err) {
+    console.error("Payment Success Error:", err);
+    res.status(500).json({ message: "Failed to finalize order" });
+  }
+};
+
+module.exports = { createPayment, paymentSuccess };
 
 
 
